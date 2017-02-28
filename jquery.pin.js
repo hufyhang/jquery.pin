@@ -34,11 +34,19 @@
                 }, options.padding || {});
 
                 $this.data("pin", {
+                    $container: $container,
+                    containerOffset: containerOffset,
+                    $this: $this,
                     pad: pad,
                     from: (options.containerSelector ? containerOffset.top : offset.top) - pad.top,
                     to: containerOffset.top + $container.height() - $this.outerHeight() - pad.bottom,
                     end: containerOffset.top + $container.height(),
-                    parentTop: parentOffset.top
+                    parentTop: parentOffset.top,
+                    calcTo: (function (containerOffset, $container, $this, pad) {
+                      return function () {
+                        return containerOffset.top + $container.height() - $this.outerHeight() - pad.bottom;
+                      };
+                    })(containerOffset, $container, $this, pad)
                 });
 
                 $this.css({width: $this.outerWidth()});
@@ -62,8 +70,11 @@
 
                 elmts.push($this);
 
-                var from = data.from - data.pad.bottom,
-                    to = data.to - data.pad.top;
+                var from = data.from - data.pad.bottom;
+                var to = data.to - data.pad.top;
+                if (options.dymanicHeight) {
+                    to = data.calcTo() - data.pad.top;
+                }
 
                 if (from + $this.outerHeight() > data.end) {
                     $this.css('position', '');
