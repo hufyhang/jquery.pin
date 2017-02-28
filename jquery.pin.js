@@ -72,7 +72,7 @@
 
                 var from = data.from - data.pad.bottom;
                 var to = data.to - data.pad.top;
-                if (options.dymanicHeight) {
+                if (options.dynamicHeight) {
                     to = data.calcTo() - data.pad.top;
                 }
 
