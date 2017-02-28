@@ -1,3 +1,11 @@
+## Changes
+
+New options:
+
+1. `offsetTop`: declare the scroll offset top of the element to be pinned.
+2. `dynamicHeight`: declare if the target element has dynamic height.
+
+
 ## jQuery.pin
 
 Ever wanted to **pin** something to the side of a text? Ever needed a subtle sticky element to quietly hang around as you scroll down?
