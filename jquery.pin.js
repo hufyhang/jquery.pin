@@ -42,6 +42,11 @@
                     to: containerOffset.top + $container.height() - $this.outerHeight() - pad.bottom,
                     end: containerOffset.top + $container.height(),
                     parentTop: parentOffset.top,
+                    calcParentTop: (function ($this) {
+                      return function () {
+                        return $this.offsetParent().offset().top;
+                      };
+                    })($this),
                     calcTo: (function (containerOffset, $container, $this, pad) {
                       return function () {
                         return containerOffset.top + $container.height() - $this.outerHeight() - pad.bottom;
@@ -84,16 +89,16 @@
                 var offsetTop = options.offsetTop || 0;
 
                 if (from - offsetTop < scrollY && to > scrollY) {
-                    !($this.css("position") == "fixed") && $this.css({
+                    !($this.css("position") == "fixed") && $this.css('position', 'fixed').css({
                         left: $this.offset().left,
                         top: data.pad.top
-                    }).css("position", "fixed");
+                    });
                     if (options.activeClass) { $this.addClass(options.activeClass); }
                 } else if (scrollY >= to) {
-                    $this.css({
+                    $this.css('position', 'absolute').css({
                         left: "",
-                        top: to - data.parentTop + data.pad.top
-                    }).css("position", "absolute");
+                        top: to - data.calcParentTop() + data.pad.top
+                    });
                     if (options.activeClass) { $this.addClass(options.activeClass); }
                 } else {
                     $this.css({position: "", top: "", left: ""});
