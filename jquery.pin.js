@@ -33,12 +33,18 @@
                   bottom: 0
                 }, options.padding || {});
 
+                var $fixContainer = null;
+                if (typeof options.fixContainer === 'string') {
+                  $fixContainer = $(options.fixContainer);
+                }
+
                 $this.data("pin", {
                     $container: $container,
                     containerOffset: containerOffset,
                     $this: $this,
                     pad: pad,
                     from: (options.containerSelector ? containerOffset.top : offset.top) - pad.top,
+                    $fixContainer: $fixContainer,
                     to: containerOffset.top + $container.height() - $this.outerHeight() - pad.bottom,
                     end: containerOffset.top + $container.height(),
                     parentTop: parentOffset.top,
@@ -57,6 +63,25 @@
                 $this.css({width: $this.outerWidth()});
                 $this.parent().css("height", $this.outerHeight());
             }
+        };
+
+        var onResize = function () {
+          if (disabled) { return; }
+            var elmts = [];
+            for (var i=0, len=elements.length; i<len; i++) {
+              var $this = $(elements[i]),
+                data  = $this.data("pin");
+
+              if (!data) { // Removed element
+                continue;
+              }
+
+              elmts.push($this);
+              if($this.css('position') === 'fixed' && data.$fixContainer !== null) {
+                $this.css('left', data.$fixContainer.offset().left);
+              }
+          }
+          elements = elmts;
         };
 
         var onScroll = function () {
@@ -89,10 +114,10 @@
                 var offsetTop = options.offsetTop || 0;
 
                 if (from - offsetTop < scrollY && to > scrollY) {
-                    !($this.css("position") == "fixed") && $this.css('position', 'fixed').css({
+                    !($this.css("position") == "fixed") && $this.css({
                         left: $this.offset().left,
                         top: data.pad.top
-                    });
+                    }).css('position', 'fixed');
                     if (options.activeClass) { $this.addClass(options.activeClass); }
                 } else if (scrollY >= to) {
                     $this.css('position', 'absolute').css({
@@ -122,7 +147,11 @@
         });
 
         $window.scroll(onScroll);
-        $window.resize(function () { recalculateLimits(); });
+        $window.resize(function () {
+          onResize();
+          recalculateLimits();
+        });
+
         recalculateLimits();
 
         $window.load(update);
