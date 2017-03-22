@@ -156,6 +156,18 @@
 
         $window.load(update);
 
-        return this;
+        return {
+          pinnedElements: elements,
+          self: this,
+          destroy: function () {
+            var self = $(this);
+            var index = elements.findIndex(function (element) {
+              return JSON.stringify(element).trim() === JSON.stringify(self).trim();
+            });
+            if (index !== -1) {
+              elements.splice(index, 1);
+            }
+          }
+        };
       };
 })(jQuery);

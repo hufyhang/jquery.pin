@@ -1,11 +1,18 @@
 ## Changes
 
-New options:
+### New options:
 
 1. `offsetTop`: declare the scroll offset top of the element to be pinned.
 2. `dynamicHeight`: declare if the target element has dynamic height.
 3. `fixContainer`: declare the container to be used to calculate the left offset of the pinned element when this element becomes position-fixed.
 
+### New methods:
+
+Once an element is `pin`ed, it returns an object containing the follows:
+
++ `pinnedElement`: _array_ all pinned elements.
++ `self`: _Node element_ current element.
++ `destroy`: _method_ to stop pinning this element.
 
 ## jQuery.pin
 
