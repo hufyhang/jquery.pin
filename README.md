@@ -5,6 +5,8 @@
 1. `offsetTop`: declare the scroll offset top of the element to be pinned.
 2. `dynamicHeight`: declare if the target element has dynamic height.
 3. `fixContainer`: declare the container to be used to calculate the left offset of the pinned element when this element becomes position-fixed.
+4. `alwaysFixed`: make the element always keep position-fixed in unpinned mode.
+5. `originalPositionContainer`: declare the original position (container) selector for `alwaysFixed` mode.
 
 ### New methods:
 

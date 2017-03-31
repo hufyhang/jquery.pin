@@ -38,7 +38,18 @@
                   $fixContainer = $(options.fixContainer);
                 }
 
+                var originalTop = 0;
+                if (typeof options.originalPositionContainer === 'string') {
+                  originalTop = $(options.originalPositionContainer).offset().top;
+                }
+                else {
+                  originalTop = $this.offset().top;
+                }
+
                 $this.data("pin", {
+                    alwaysFixed: options.alwaysFixed || false,
+                    originalPositionContainer: options.originalPositionContainer,
+                    originalTop: originalTop,
                     $container: $container,
                     containerOffset: containerOffset,
                     $this: $this,
@@ -114,7 +125,7 @@
                 var offsetTop = options.offsetTop || 0;
 
                 if (from - offsetTop < scrollY && to > scrollY) {
-                    !($this.css("position") == "fixed") && $this.css({
+                  (data.alwaysFixed || !($this.css("position") == "fixed")) && $this.css({
                         left: $this.offset().left,
                         top: data.pad.top
                     }).css('position', 'fixed');
@@ -126,7 +137,23 @@
                     });
                     if (options.activeClass) { $this.addClass(options.activeClass); }
                 } else {
-                    $this.css({position: "", top: "", left: ""});
+                    var style = {};
+                    if (data.alwaysFixed) {
+                      var top = data.originalTop - scrollY;
+                      style = {
+                        position: 'fixed',
+                        top: top,
+                        left: ''
+                      }
+                    }
+                    else {
+                      style = {
+                        position: '',
+                        top: '',
+                        left: ''
+                      }
+                    }
+                    $this.css(style);
                     if (options.activeClass) { $this.removeClass(options.activeClass); }
                 }
           }
@@ -156,18 +183,6 @@
 
         $window.load(update);
 
-        return {
-          pinnedElements: elements,
-          self: this,
-          destroy: function () {
-            var self = $(this);
-            var index = elements.findIndex(function (element) {
-              return JSON.stringify(element).trim() === JSON.stringify(self).trim();
-            });
-            if (index !== -1) {
-              elements.splice(index, 1);
-            }
-          }
-        };
+        return this;
       };
 })(jQuery);
